@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/status/**").permitAll()
                         .requestMatchers("/api/subject").permitAll()
+                                .requestMatchers("/api/file/**").permitAll()
 //                        .requestMatchers("/api/auth/users").hasRole("ADMIN") // 👈 Thêm dòng này
 //                        .requestMatchers("/api/auth/**").hasAnyRole("ADMIN", "STUDENT")
                         .anyRequest().authenticated()

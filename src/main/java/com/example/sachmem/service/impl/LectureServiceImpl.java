@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -78,8 +79,12 @@ public class LectureServiceImpl implements LectureService {
 
         lectureRepository.save(lecture);
 
+        // Lấy danh sách vocab từ request, nếu null thì gán danh sách rỗng
+        List<VocabularyItemRequest> vocabularyRequests = Optional.ofNullable(request.getVocabularyItemRequests())
+                .orElse(Collections.emptyList());
+
         // Lấy các ID từ request để phục vụ xử lý xoá (nếu cần)
-        Set<Long> requestIds = request.getVocabularyItemRequests().stream()
+        Set<Long> requestIds = vocabularyRequests.stream()
                 .filter(v -> v.getId() != null)
                 .map(VocabularyItemRequest::getId)
                 .collect(Collectors.toSet());
@@ -93,9 +98,9 @@ public class LectureServiceImpl implements LectureService {
         }
 
         // Duyệt từng phần tử trong request
-        for (VocabularyItemRequest viReq : request.getVocabularyItemRequests()) {
+        for (VocabularyItemRequest viReq : vocabularyRequests) {
             if (viReq.getId() == null) {
-                // Insert mới
+                // Thêm mới
                 VocabularyItem newItem = VocabularyItem.builder()
                         .lecture(lecture)
                         .chineseWord(viReq.getChineseWord())
@@ -104,7 +109,7 @@ public class LectureServiceImpl implements LectureService {
                         .build();
                 vocabularyItemRepository.save(newItem);
             } else {
-                // Update
+                // Cập nhật
                 VocabularyItem existing = vocabularyItemRepository.findById(viReq.getId())
                         .orElseThrow(() -> new RuntimeException("VocabularyItem not found with id " + viReq.getId()));
                 existing.setChineseWord(viReq.getChineseWord());

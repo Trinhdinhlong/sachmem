@@ -26,7 +26,7 @@ public class Section {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "book_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Book book;
     @ManyToOne
     @JoinColumn(name = "status_id")

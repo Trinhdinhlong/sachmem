@@ -35,7 +35,7 @@ public class SectionServiceImpl implements SectionService {
     @Override
     public List<SectionResponse> getSections(Long bookId) {
         List<Section> sections = sectionRepository.findByBookIdAndBookEnableTrue(bookId);
-
+        System.out.println(sections.size());
         return sections.stream().map(section -> {
             SectionResponse response = new SectionResponse();
             response.setId(section.getId());

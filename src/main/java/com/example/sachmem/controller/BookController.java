@@ -1,5 +1,6 @@
 package com.example.sachmem.controller;
 
+import com.example.sachmem.dto.reponse.BookDetailReponse;
 import com.example.sachmem.dto.reponse.BookReponse;
 import com.example.sachmem.dto.reponse.BookReponseAdmin;
 import com.example.sachmem.dto.request.BookRequest;
@@ -66,5 +67,9 @@ public class BookController {
         } else {
             return ResponseEntity.badRequest().body("Không tìm thấy sách để xoá.");
         }
+    }
+    @GetMapping("/bookdetail/{id}")
+    public BookDetailReponse getBookDetail(@PathVariable Long id) {
+        return bookService.getBookDetail(id);
     }
 }

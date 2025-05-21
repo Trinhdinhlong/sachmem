@@ -1,10 +1,13 @@
 package com.example.sachmem.service.impl;
 
+import com.example.sachmem.dto.reponse.BookDetailReponse;
 import com.example.sachmem.dto.reponse.BookReponse;
 import com.example.sachmem.dto.reponse.BookReponseAdmin;
+import com.example.sachmem.dto.reponse.SectionResponse;
 import com.example.sachmem.dto.request.BookRequest;
 import com.example.sachmem.exception.EntityNotFoundException;
 import com.example.sachmem.model.Book;
+import com.example.sachmem.model.Section;
 import com.example.sachmem.repository.*;
 import com.example.sachmem.service.BookService;
 import jakarta.transaction.Transactional;
@@ -66,7 +69,7 @@ public class BookServiceImpl implements BookService {
             res.setAuthor(book.getAuthor());
             res.setPublisher(book.getPublisher());
             res.setLanguage(book.getLanguage());
-
+            res.setCoverImage(book.getImage());
             // Tính toán số liệu
             int total = totalSections(book.getId());
             int completed = completedSections(userId, book.getId());
@@ -201,5 +204,31 @@ public class BookServiceImpl implements BookService {
             }
         }
         return completedCount;
+    }
+
+    @Override
+    public BookDetailReponse getBookDetail(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with id: " + id));
+
+        List<Section> sections = sectionRepository.findByBookIdAndBookEnableTrue(book.getId());
+
+        List<SectionResponse> sectionResponses = sections.stream()
+                .map(section -> SectionResponse.builder()
+                        .id(section.getId())
+                        .title(section.getTitle())
+                        .description(section.getDescription()) // tuỳ cấu trúc dữ liệu của bạn
+                        .build())
+                .collect(Collectors.toList());
+
+        return BookDetailReponse.builder()
+                .title(book.getTitle())
+                .description(book.getDescription())
+                .author(book.getAuthor())
+                .publisher(book.getPublisher())
+                .language(book.getLanguage())
+                .coverImage(book.getImage())
+                .sections(sectionResponses)
+                .build();
     }
 }

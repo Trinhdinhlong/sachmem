@@ -47,7 +47,7 @@ public class SectionController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteSection(@PathVariable Long id) {
         sectionService.deleteSection(id);

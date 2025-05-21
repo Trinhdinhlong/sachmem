@@ -32,7 +32,7 @@ public class Book {
     private String publisher;
     private String language;
     private String image;
-    private boolean enable = true;
+    private boolean enable;
 
     @CreationTimestamp
     private Date createdAt;
